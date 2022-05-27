@@ -1,0 +1,13 @@
+{
+  "name": "coreword",
+  "version": "0.0.1",
+  "type": "module",
+  "dependencies": {
+    "js-sha3": "^0.8.0",
+    "rlp": "^3.0.0",
+    "tweetnacl": "^1.0.3"
+  },
+  "devDependencies": {
+    "tapzero": "^0.6.1"
+  }
+}
