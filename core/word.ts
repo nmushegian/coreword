@@ -1,13 +1,13 @@
 import rlp from 'rlp'
 import hashes from 'js-sha3'
 
-type Blob = Buffer
-type Roll = Blob | Roll[]
-type Hash = Blob // 32 bytes
-type Pubk = Blob // 32 bytes
-type Seck = Blob // 64 bytes
-type Sign = Blob // 65 bytes
-type Hexs = string // hex string
+export type Blob = Buffer
+export type Roll = Blob | Roll[]
+export type Hash = Blob // 32 bytes
+export type Pubk = Blob // 32 bytes
+export type Seck = Blob // 64 bytes
+export type Sign = Blob // 65 bytes
+export type Hexs = string // hex string
 
 export function blob(hex : Hexs) : Blob {
     return Buffer.from(hex, 'hex')

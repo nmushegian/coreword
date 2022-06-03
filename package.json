@@ -1,7 +1,8 @@
 {
   "name": "coreword",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
+  "main": "./core/word.ts",
   "dependencies": {
     "js-sha3": "^0.8.0",
     "rlp": "^3.0.0",
