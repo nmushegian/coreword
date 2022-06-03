@@ -21,18 +21,10 @@ export function hash(b : Blob) : Hash {
     return Buffer.from(hashes.keccak256(b), 'hex')
 }
 
-export function sign(msg : Blob, key: Seck, opts : any = {fake:false}) : Sign {
-    if (opts.fake === true) {
-        return Buffer.from('fakes'.repeat(13)) // 65 bytes
-    } else {
-        throw new Error(`unimplemented`)
-    }
+export function sign(msg : Blob, key: Seck) : Sign {
+    throw new Error(`unimplemented`)
 }
 
-export function scry(msg : Blob, sig : Sign, opts : any = {fake:false}) : Pubk {
-    if (opts.fake === true) {
-        return Buffer.from('pubk'.repeat(8)) // 32 bytes
-    } else {
-        throw new Error(`unimplemented`)
-    }
+export function scry(msg : Blob, sig : Sign) : Pubk {
+    throw new Error(`unimplemented`)
 }
