@@ -1,9 +1,13 @@
 {
   "name": "coreword",
-  "version": "0.0.3",
+  "version": "0.0.8",
   "type": "module",
   "main": "./core/word.ts",
+  "scripts": {
+    "test": "npx tsc && node dist/test.js"
+  },
   "dependencies": {
+    "elliptic": "^6.5.4",
     "js-sha3": "^0.8.0",
     "rlp": "^3.0.0",
     "typescript": "^4.7.2"
