@@ -32,9 +32,9 @@ export function sign(msg : Blob, key: Seck) : Sign {
     let keys = _ec.keyFromPrivate(key);
     let sig = keys.sign(dig, { canonical: true });
     let cat = Buffer.concat([
-      sig.r.toBuffer(),
-      sig.s.toBuffer(),
-      Buffer.from([sig.recoveryParam])
+      sig.r.toBuffer('be', 32),
+      sig.s.toBuffer('be', 32),
+      Buffer.from([sig.recoveryParam ? sig.recoveryParam : 0])
     ]);
     return cat;
 }

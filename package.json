@@ -2,9 +2,10 @@
   "name": "coreword",
   "version": "0.0.8",
   "type": "module",
-  "main": "./core/word.ts",
+  "main": "./dist/word.js",
   "scripts": {
-    "test": "npx tsc && node dist/test.js"
+    "pretest": "npx tsc",
+    "test": "node dist/test.js"
   },
   "dependencies": {
     "elliptic": "^6.5.4",
