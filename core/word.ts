@@ -2,32 +2,80 @@ import rlp from 'rlp'
 import hashes from 'js-sha3'
 import elliptic from 'elliptic'
 
-export type Blob = Buffer
-export type Roll = Blob | Roll[]
-export type Hash = Blob // 32 bytes
-export type Pubk = Blob // 33 bytes
-export type Seck = Blob // 32 bytes
-export type Sign = Blob // 65 bytes
-export type Hexs = string // hex string
+const _ec = new elliptic.ec('secp256k1') // init/reusable
 
-const _ec = new elliptic.ec('secp256k1')
+export {
+  Blob, blob, roll,
+  Roll, rmap, unroll,
+  Hash, hash,
+  Sign, Pubk, Seck, sign, scry,
+  Hexs,
+  Okay, okay, pass, fail, toss, err
+}
 
-export function blob(hex : Hexs) : Blob {
+type Blob = Buffer
+type Roll = Blob | Roll[]
+type Hash = Blob // 32 bytes
+type Pubk = Blob // 33 bytes
+type Seck = Blob // 32 bytes
+type Sign = Blob // 65 bytes
+type Hexs = string // hex string
+
+type Okay<T> = [true, T]
+             | [false, Why]
+
+type Why     = [Error, Why?] // chainable
+
+function okay(x :Okay<any>) :any {
+    let [ok, v] = x
+    if (ok) return v
+    else throw v[0]
+}
+
+function pass(v:any) :Okay<any> {
+    return [true, v]
+}
+
+function fail(v:any, why:string, trace?:Why) :Okay<any> {
+    return [false, [err(why), trace]]
+}
+
+function toss(why :string) {
+    throw err(why)
+}
+
+function err(why :string) : Error {
+    return new Error(why)
+}
+
+function blob(hex : Hexs) : Blob {
     return Buffer.from(hex, 'hex')
 }
 
-export function roll(r : Roll) : Blob {
+function roll(r : Roll) : Blob {
     return Buffer.from(rlp.encode(r))
 }
 
-export function hash(b : Blob) : Hash {
+function unroll(b :Blob) :Roll {
+    return rmap(rlp.decode(b), Buffer.from)
+}
+
+function rmap(r :any, f :Function) :any {
+    if (Array.isArray(r)) {
+        return r.map(x => rmap(x, f))
+    } else {
+        return f(r)
+    }
+}
+
+function hash(b : Blob) : Hash {
     return Buffer.from(hashes.keccak256(b), 'hex')
 }
 
 // https://github.com/ethers-io/ethers.js/blob/
 // c2c0ce75039e7256b287f9a764188d08ed0b7296/
 // packages/signing-key/src.ts/index.ts#L51
-export function sign(msg : Blob, key: Seck) : Sign {
+function sign(msg : Blob, key: Seck) : Sign {
     let dig = hash(msg);
     let keys = _ec.keyFromPrivate(key);
     let sig = keys.sign(dig, { canonical: true });
@@ -42,7 +90,7 @@ export function sign(msg : Blob, key: Seck) : Sign {
 // https://github.com/ethers-io/ethers.js/blob/
 //   c2c0ce75039e7256b287f9a764188d08ed0b7296/
 //   packages/signing-key/src.ts/index.ts#L76
-export function scry(msg : Blob, sig : Sign) : Pubk {
+function scry(msg : Blob, sig : Sign) : Pubk {
     let dig = hash(msg);
     let rs = {
       r: sig.slice(0, 32),

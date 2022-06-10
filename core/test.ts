@@ -1,8 +1,21 @@
 import { test } from 'tapzero'
-import { blob, sign, scry } from './word.js'
 import elliptic from 'elliptic'
-
 import {randomBytes} from 'crypto'
+
+import {
+  blob,
+  sign,
+  scry,
+  roll,
+  unroll
+} from './word.js'
+
+test("roll/unroll", t=>{
+  let x = [blob('00'), blob(''), [blob('ffff'), []]]
+  let rolled = roll(x)
+  let unrolled = unroll(rolled)
+  t.deepEqual(x, unrolled)
+})
 
 test("sign/scry", t=>{
   for(let i = 0; i < 100; i++) {
@@ -21,3 +34,4 @@ test("sign/scry", t=>{
     t.ok(pubk.equals(ecr))
   }
 })
+
