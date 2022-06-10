@@ -36,7 +36,7 @@ function pass(v:any) :Okay<any> {
     return [true, v]
 }
 
-function fail(v:any, why:string, trace?:Why) :Okay<any> {
+function fail(why:string, trace?:Why) :Okay<any> {
     return [false, [err(why), trace]]
 }
 
