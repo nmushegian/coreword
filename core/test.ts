@@ -22,7 +22,7 @@ test("sign/scry", t=>{
     //console.log('  ')
     let ec = new elliptic.ec('secp256k1')
     let keys = ec.genKeyPair()
-    let pubk = Buffer.from(keys.getPublic().encode())
+    let pubk = Buffer.from(keys.getPublic().encodeCompressed())
     let seck = keys.priv.toBuffer()
     //console.log(pubk.length, pubk.toString('hex'))
     //console.log(seck.length, seck.toString('hex'))

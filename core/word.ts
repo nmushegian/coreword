@@ -98,5 +98,5 @@ function scry(msg : Blob, sig : Sign) : Pubk {
     }
     let v = sig[64];
     let pub = _ec.recoverPubKey(dig, rs, v);
-    return Buffer.from(pub.encode())
+    return Buffer.from(pub.encodeCompressed())
 }
