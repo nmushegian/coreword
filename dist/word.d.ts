@@ -1,0 +1,23 @@
+/// <reference types="node" />
+export { Blob, blob, roll, Roll, rmap, unroll, Hash, hash, Sign, Pubk, Seck, sign, scry, Hexs, Okay, okay, pass, fail, toss, err };
+declare type Blob = Buffer;
+declare type Roll = Blob | Roll[];
+declare type Hash = Blob;
+declare type Pubk = Blob;
+declare type Seck = Blob;
+declare type Sign = Blob;
+declare type Hexs = string;
+declare type Okay<T> = [true, T] | [false, Why];
+declare type Why = [Error, Why?];
+declare function okay(x: Okay<any>): any;
+declare function pass(v: any): Okay<any>;
+declare function fail(why: string, trace?: Why): Okay<any>;
+declare function toss(why: string): void;
+declare function err(why: string): Error;
+declare function blob(hex: Hexs): Blob;
+declare function roll(r: Roll): Blob;
+declare function unroll(b: Blob): Roll;
+declare function rmap(r: any, f: Function): any;
+declare function hash(b: Blob): Hash;
+declare function sign(msg: Blob, key: Seck): Sign;
+declare function scry(msg: Blob, sig: Sign): Pubk;
