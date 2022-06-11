@@ -5,12 +5,12 @@ import elliptic from 'elliptic'
 const _ec = new elliptic.ec('secp256k1') // init/reusable
 
 export {
-  Blob, blob, roll,
-  Roll, rmap, unroll,
-  Hash, hash,
-  Sign, Pubk, Seck, sign, scry,
-  Hexs,
-  Okay, okay, pass, fail, toss, err
+    Blob, blob, roll, isBlob, isList,
+    Roll, rmap, unroll,
+    Hash, hash,
+    Sign, Pubk, Seck, sign, scry,
+    Hexs,
+    Okay, okay, pass, fail, toss, err
 }
 
 type Blob = Buffer
@@ -21,23 +21,20 @@ type Seck = Blob // 32 bytes
 type Sign = Blob // 65 bytes
 type Hexs = string // hex string
 
-type Okay<T> = [true, T]
-             | [false, Why]
-
-type Why     = [Error, Why?] // chainable
+type Okay<T> = [boolean, T, string[]]
 
 function okay(x :Okay<any>) :any {
-    let [ok, v] = x
-    if (ok) return v
-    else throw v[0]
+    let [ok, val, errs] = x
+    if (ok) return val
+    else toss(errs[0])
 }
 
 function pass(v:any) :Okay<any> {
-    return [true, v]
+    return [true, v, []]
 }
 
-function fail(why:string, trace?:Why) :Okay<any> {
-    return [false, [err(why), trace]]
+function fail(why:string, whys?:string[]) :Okay<any> {
+    return [false, null, [...whys, why]]
 }
 
 function toss(why :string) {
@@ -46,6 +43,14 @@ function toss(why :string) {
 
 function err(why :string) : Error {
     return new Error(why)
+}
+
+function isList(r :Roll) :boolean {
+    return Array.isArray(r)
+}
+
+function isBlob(r :Roll) :boolean {
+    return Buffer.isBuffer(r)
 }
 
 function blob(hex : Hexs) : Blob {
@@ -80,9 +85,9 @@ function sign(msg : Blob, key: Seck) : Sign {
     let keys = _ec.keyFromPrivate(key);
     let sig = keys.sign(dig, { canonical: true });
     let cat = Buffer.concat([
-      sig.r.toBuffer('be', 32),
-      sig.s.toBuffer('be', 32),
-      Buffer.from([sig.recoveryParam ? sig.recoveryParam : 0])
+	sig.r.toBuffer('be', 32),
+	sig.s.toBuffer('be', 32),
+	Buffer.from([sig.recoveryParam ? sig.recoveryParam : 0])
     ]);
     return cat;
 }
@@ -93,8 +98,8 @@ function sign(msg : Blob, key: Seck) : Sign {
 function scry(msg : Blob, sig : Sign) : Pubk {
     let dig = hash(msg);
     let rs = {
-      r: sig.slice(0, 32),
-      s: sig.slice(32, 64)
+	r: sig.slice(0, 32),
+	s: sig.slice(32, 64)
     }
     let v = sig[64];
     let pub = _ec.recoverPubKey(dig, rs, v);

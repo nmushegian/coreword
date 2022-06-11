@@ -2,25 +2,31 @@ import rlp from 'rlp';
 import hashes from 'js-sha3';
 import elliptic from 'elliptic';
 const _ec = new elliptic.ec('secp256k1'); // init/reusable
-export { blob, roll, rmap, unroll, hash, sign, scry, okay, pass, fail, toss, err };
+export { blob, roll, isBlob, isList, rmap, unroll, hash, sign, scry, okay, pass, fail, toss, err };
 function okay(x) {
-    let [ok, v] = x;
+    let [ok, val, errs] = x;
     if (ok)
-        return v;
+        return val;
     else
-        throw v[0];
+        toss(errs[0]);
 }
 function pass(v) {
-    return [true, v];
+    return [true, v, []];
 }
-function fail(why, trace) {
-    return [false, [err(why), trace]];
+function fail(why, whys) {
+    return [false, null, [...whys, why]];
 }
 function toss(why) {
     throw err(why);
 }
 function err(why) {
     return new Error(why);
+}
+function isList(r) {
+    return Array.isArray(r);
+}
+function isBlob(r) {
+    return Buffer.isBuffer(r);
 }
 function blob(hex) {
     return Buffer.from(hex, 'hex');
