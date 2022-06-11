@@ -33,7 +33,7 @@ function pass(v:any) :Okay<any> {
     return [true, v, []]
 }
 
-function fail(why:string, whys?:string[]) :Okay<any> {
+function fail(why:string, whys:string[] = []) :Okay<any> {
     return [false, null, [...whys, why]]
 }
 

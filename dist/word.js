@@ -13,7 +13,7 @@ function okay(x) {
 function pass(v) {
     return [true, v, []];
 }
-function fail(why, whys) {
+function fail(why, whys = []) {
     return [false, null, [...whys, why]];
 }
 function toss(why) {
