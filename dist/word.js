@@ -42,7 +42,7 @@ function isblob(r) {
     return Buffer.isBuffer(r);
 }
 function b2h(blob) {
-    return new Buffer(blob).toString('hex');
+    return blob.toString('hex');
 }
 function h2b(hexs) {
     if (hexs.length % 2 == 1) {
@@ -71,7 +71,7 @@ function roll(r) {
     return Buffer.from(rlp.encode(rmap(r, Buffer.from)));
 }
 function unroll(b) {
-    return rlp.decode(Buffer.from(b));
+    return rmap(rlp.decode(b), Buffer.from);
 }
 function rmap(r, f) {
     if (Array.isArray(r)) {

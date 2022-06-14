@@ -13,7 +13,7 @@ export {
     Okay, okay, pass, fail, toss, err, need, aver,
 }
 
-type Blob = ArrayBuffer
+type Blob = Buffer
 type Roll = Blob | Roll[]
 type Hash = Blob // 32 bytes
 type Pubk = Blob // 33 bytes
@@ -66,7 +66,7 @@ function isblob(r :Roll) :boolean {
 }
 
 function b2h(blob : Blob) :Hexs {
-    return new Buffer(blob).toString('hex')
+    return blob.toString('hex')
 }
 
 function h2b(hexs :Hexs) :Blob {
@@ -98,7 +98,7 @@ function roll(r : Roll) : Blob {
 }
 
 function unroll(b :Blob) :Roll {
-    return rlp.decode(Buffer.from(b))
+    return rmap(rlp.decode(b), Buffer.from)
 }
 
 function rmap(r :any, f :Function) :any {
