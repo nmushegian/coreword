@@ -54,6 +54,9 @@ function isBlob(r :Roll) :boolean {
 }
 
 function blob(hex : Hexs) : Blob {
+    if (hex.length % 2 == 1) {
+        hex = '0' + hex
+    }
     return Buffer.from(hex, 'hex')
 }
 

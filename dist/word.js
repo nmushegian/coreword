@@ -29,6 +29,9 @@ function isBlob(r) {
     return Buffer.isBuffer(r);
 }
 function blob(hex) {
+    if (hex.length % 2 == 1) {
+        hex = '0' + hex;
+    }
     return Buffer.from(hex, 'hex');
 }
 function roll(r) {
