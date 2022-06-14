@@ -57,11 +57,11 @@ function need(b :boolean, s :string) {
     if (!b) toss(s)
 }
 
-function islist(r :Roll) :boolean {
+function islist(r :any) :boolean {
     return Array.isArray(r)
 }
 
-function isblob(r :Roll) :boolean {
+function isblob(r :any) :boolean {
     return Buffer.isBuffer(r)
 }
 
