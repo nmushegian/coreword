@@ -5,12 +5,12 @@ import elliptic from 'elliptic'
 const _ec = new elliptic.ec('secp256k1') // init/reusable
 
 export {
-    Blob, blen, bleq, isblob, b2h, h2b,
+    Blob, blen, bleq, chop, isblob, b2h, h2b,
     Roll, roll, unroll, rmap, islist, isroll,
     Hash, hash,
     Sign, Pubk, Seck, sign, scry,
     Hexs,
-    Okay, okay, pass, fail, toss, err
+    Okay, okay, pass, fail, toss, err, need, aver,
 }
 
 type Blob = ArrayBuffer

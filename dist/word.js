@@ -2,7 +2,7 @@ import rlp from 'rlp';
 import hashes from 'js-sha3';
 import elliptic from 'elliptic';
 const _ec = new elliptic.ec('secp256k1'); // init/reusable
-export { blen, bleq, isblob, b2h, h2b, roll, unroll, rmap, islist, isroll, hash, sign, scry, okay, pass, fail, toss, err };
+export { blen, bleq, chop, isblob, b2h, h2b, roll, unroll, rmap, islist, isroll, hash, sign, scry, okay, pass, fail, toss, err, need, aver, };
 // precondition / panic assert
 // give lambda to defer eval when disabled
 let _aver = true; //false;
