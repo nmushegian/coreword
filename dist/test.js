@@ -1,9 +1,10 @@
 import { test } from 'tapzero';
 import elliptic from 'elliptic';
 import { randomBytes } from 'crypto';
-import { blob, sign, scry, roll, unroll } from './word.js';
+import { h2b, bleq, sign, scry, roll, unroll, isroll } from './word.js';
 test("roll/unroll", t => {
-    let x = [blob('00'), blob(''), [blob('ffff'), []]];
+    let x = [h2b('00'), h2b(''), [h2b('ffff'), []]];
+    t.ok(isroll(x));
     let rolled = roll(x);
     let unrolled = unroll(rolled);
     t.deepEqual(x, unrolled);
@@ -22,6 +23,6 @@ test("sign/scry", t => {
         //console.log(sig.length, sig.toString('hex'))
         let ecr = scry(msg, sig);
         //console.log(ecr.length, ecr.toString('hex'))
-        t.ok(pubk.equals(ecr));
+        t.ok(bleq(pubk, ecr));
     }
 });

@@ -1,6 +1,5 @@
-/// <reference types="node" />
-export { Blob, blob, roll, isBlob, isList, Roll, rmap, unroll, Hash, hash, Sign, Pubk, Seck, sign, scry, Hexs, Okay, okay, pass, fail, toss, err };
-declare type Blob = Buffer;
+export { Blob, blen, bleq, isblob, b2h, h2b, Roll, roll, unroll, rmap, islist, isroll, Hash, hash, Sign, Pubk, Seck, sign, scry, Hexs, Okay, okay, pass, fail, toss, err };
+declare type Blob = ArrayBuffer;
 declare type Roll = Blob | Roll[];
 declare type Hash = Blob;
 declare type Pubk = Blob;
@@ -13,9 +12,13 @@ declare function pass(v: any): Okay<any>;
 declare function fail(why: string, whys?: string[]): Okay<any>;
 declare function toss(why: string): void;
 declare function err(why: string): Error;
-declare function isList(r: Roll): boolean;
-declare function isBlob(r: Roll): boolean;
-declare function blob(hex: Hexs): Blob;
+declare function islist(r: Roll): boolean;
+declare function isblob(r: Roll): boolean;
+declare function b2h(blob: Blob): Hexs;
+declare function h2b(hexs: Hexs): Blob;
+declare function isroll(x: any): boolean;
+declare function blen(b: Blob): number;
+declare function bleq(a: Blob, b: Blob): boolean;
 declare function roll(r: Roll): Blob;
 declare function unroll(b: Blob): Roll;
 declare function rmap(r: any, f: Function): any;

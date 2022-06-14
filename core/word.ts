@@ -5,15 +5,15 @@ import elliptic from 'elliptic'
 const _ec = new elliptic.ec('secp256k1') // init/reusable
 
 export {
-    Blob, blob, roll, isBlob, isList,
-    Roll, rmap, unroll,
+    Blob, blen, bleq, isblob, b2h, h2b,
+    Roll, roll, unroll, rmap, islist, isroll,
     Hash, hash,
     Sign, Pubk, Seck, sign, scry,
     Hexs,
     Okay, okay, pass, fail, toss, err
 }
 
-type Blob = Buffer
+type Blob = ArrayBuffer
 type Roll = Blob | Roll[]
 type Hash = Blob // 32 bytes
 type Pubk = Blob // 33 bytes
@@ -22,6 +22,14 @@ type Sign = Blob // 65 bytes
 type Hexs = string // hex string
 
 type Okay<T> = [boolean, T, string[]]
+
+
+// precondition / panic assert
+// give lambda to defer eval when disabled
+let _aver = true //false;
+function aver(bf :((a?:any)=>boolean), s :string) {
+    if (_aver && !bf()) { console.log(`PANIC`); toss(s) }
+}
 
 function okay(x :Okay<any>) :any {
     let [ok, val, errs] = x
@@ -45,27 +53,52 @@ function err(why :string) : Error {
     return new Error(why)
 }
 
-function isList(r :Roll) :boolean {
+function need(b :boolean, s :string) {
+    if (!b) toss(s)
+}
+
+function islist(r :Roll) :boolean {
     return Array.isArray(r)
 }
 
-function isBlob(r :Roll) :boolean {
+function isblob(r :Roll) :boolean {
     return Buffer.isBuffer(r)
 }
 
-function blob(hex : Hexs) : Blob {
-    if (hex.length % 2 == 1) {
-        hex = '0' + hex
+function b2h(blob : Blob) :Hexs {
+    return new Buffer(blob).toString('hex')
+}
+
+function h2b(hexs :Hexs) :Blob {
+    if (hexs.length % 2 == 1) {
+        hexs = '0' + hexs
     }
-    return Buffer.from(hex, 'hex')
+    return Buffer.from(hexs, 'hex')
+}
+
+function isroll(x :any) :boolean {
+    if (isblob(x)) return true;
+    if (islist(x)) {
+        if (x.length == 0) return true;
+        if (x.filter(r=>isroll(r)).length > 0) return true;
+    }
+    return false
+}
+
+function blen(b :Blob) :number {
+    return new Buffer(b).length
+}
+
+function bleq(a :Blob, b:Blob) :boolean {
+    return Buffer.from(a).equals(Buffer.from(b))
 }
 
 function roll(r : Roll) : Blob {
-    return Buffer.from(rlp.encode(r))
+    return Buffer.from(rlp.encode(rmap(r, Buffer.from)))
 }
 
 function unroll(b :Blob) :Roll {
-    return rmap(rlp.decode(b), Buffer.from)
+    return rlp.decode(Buffer.from(b))
 }
 
 function rmap(r :any, f :Function) :any {
@@ -78,6 +111,12 @@ function rmap(r :any, f :Function) :any {
 
 function hash(b : Blob) : Hash {
     return Buffer.from(hashes.keccak256(b), 'hex')
+}
+
+function chop(x :Blob, k :number) :Blob {
+    let len = blen(x)
+    need(len >= k, `chop: x.len must be <= k`)
+    return x.slice(len - k, len)
 }
 
 // https://github.com/ethers-io/ethers.js/blob/
