@@ -2,10 +2,10 @@ import rlp from 'rlp';
 import hashes from 'js-sha3';
 import elliptic from 'elliptic';
 const _ec = new elliptic.ec('secp256k1'); // init/reusable
-export { blen, bleq, chop, isblob, b2h, h2b, roll, unroll, rmap, islist, isroll, hash, sign, scry, okay, pass, fail, toss, err, need, aver, };
+export { blen, bleq, chop, isblob, b2h, h2b, t2b, b2t, roll, unroll, rmap, islist, isroll, hash, sign, scry, okay, pass, fail, toss, err, need, aver, };
 // precondition / panic assert
 // give lambda to defer eval when disabled
-let _aver = true; //false;
+export let _aver = true;
 function aver(bf, s) {
     if (_aver && !bf()) {
         console.log(`PANIC`);
@@ -13,33 +13,42 @@ function aver(bf, s) {
     }
 }
 function okay(x) {
-    let [ok, val, errs] = x;
+    let [ok, val, err] = x;
     if (ok)
         return val;
     else
-        toss(errs[0]);
+        throw err;
 }
-function pass(v) {
-    return [true, v, []];
+function pass(val) {
+    return [true, val, null];
 }
-function fail(why, whys = []) {
-    return [false, null, [...whys, why]];
+function fail(wut, why) {
+    return [false, null, err(wut, why)];
 }
-function toss(why) {
-    throw err(why);
+function toss(wut, why) {
+    throw err(wut, why);
 }
-function err(why) {
-    return new Error(why);
+function err(wut, why) {
+    return new Error(wut, { "cause": why });
 }
 function need(b, s) {
     if (!b)
         toss(s);
+}
+export function bnum(b) {
+    return BigInt("0x" + b.toString('hex'));
 }
 function islist(r) {
     return Array.isArray(r);
 }
 function isblob(r) {
     return Buffer.isBuffer(r);
+}
+function t2b(t) {
+    return Buffer.from(t);
+}
+function b2t(b) {
+    return b.toString();
 }
 function b2h(blob) {
     return blob.toString('hex');
